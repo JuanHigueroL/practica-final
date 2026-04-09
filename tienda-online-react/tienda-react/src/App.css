@@ -1,0 +1,141 @@
+/* ============================================================
+   App.css — Estilos personalizados de TiendaApp
+   Bootstrap 5 se encarga del layout; aquí solo lo que Bootstrap
+   no cubre: hover, carrusel, acordeón, transiciones.
+   ============================================================ */
+
+/* ── Layout general ─────────────────────────────────────── */
+.app-wrapper {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* ── Carrito sticky ─────────────────────────────────────── */
+.carrito-panel {
+  top: 1rem;               /* Distancia desde el tope al hacer scroll */
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Tarjeta de producto ────────────────────────────────── */
+.producto-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, opacity 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.producto-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Tarjeta sin stock: transparencia visual */
+.producto-card.sin-stock {
+  opacity: 0.5;
+  filter: grayscale(40%);
+}
+
+/* ── Contenedor de imagen con efecto hover ──────────────── */
+.imagen-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 160px;         /* Altura fija para todas las miniaturas */
+  background-color: #f0f0f0;
+  cursor: zoom-in;
+}
+
+/* La imagen ocupa todo el espacio y escala suavemente */
+.producto-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease, opacity 0.25s ease;
+}
+
+/* Al pasar el cursor: se amplía */
+.imagen-wrapper:hover .producto-imagen {
+  transform: scale(1.35);
+}
+
+/* ── Indicadores del carrusel (bolitas) ─────────────────── */
+.imagen-indicadores {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.imagen-wrapper:hover .imagen-indicadores {
+  opacity: 1;
+}
+
+.indicador {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: background 0.2s ease;
+}
+
+.indicador.activo {
+  background: #ffffff;
+}
+
+/* ── Categoría acordeón ─────────────────────────────────── */
+.categoria-header {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  color: inherit;
+  text-align: left;
+}
+
+.categoria-header:hover {
+  background: #e9f0ff;
+}
+
+/* Acordeón: transición de altura con max-height */
+.categoria-contenido {
+  overflow: hidden;
+  max-height: 2000px;           /* Valor alto para que quepan todos los productos */
+  transition: max-height 0.45s ease, opacity 0.35s ease;
+  opacity: 1;
+}
+
+.categoria-contenido.oculto {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ── Botones pequeños en el carrito ─────────────────────── */
+.btn-xs {
+  padding: 0.15rem 0.4rem;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+/* ── Miniatura en el carrito ────────────────────────────── */
+.carrito-miniatura {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── Responsive: carrito debajo en móvil ────────────────── */
+@media (max-width: 767px) {
+  .carrito-panel {
+    position: static;   /* En móvil no es sticky */
+  }
+}
