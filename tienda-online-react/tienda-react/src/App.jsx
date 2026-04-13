@@ -2,36 +2,88 @@
  * App.jsx
  * Componente raíz. Centraliza:
  *   - Estado de productos (con stock reactivo)
+ *   - Estado de categorías
  *   - Estado del carrito
- *   - Todas las funciones que lo modifican
- *
- * Para conectar con el backend real, sustituye la inicialización de `productos`
- * por un useEffect con fetch/axios:
- *
- *   useEffect(() => {
- *     fetch("/api/productos")
- *       .then(r => r.json())
- *       .then(data => setProductos(data));
- *   }, []);
+ *   - Estado de la vista (tienda o admin)
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Catalogo from "./components/Catalogo";
 import Carrito from "./components/Carrito";
-import { PRODUCTOS_INICIALES } from "./data/productos";
+import AdminPanel from "./components/AdminPanel";
 import "./App.css";
 
 export default function App() {
-  // ── Estado principal ────────────────────────────────────────────
-  // Copia del catálogo con stock mutable (se reduce al añadir, aumenta al quitar)
-  const [productos, setProductos] = useState(PRODUCTOS_INICIALES);
-
-  // Carrito: array de { producto: {...}, cantidad: number }
+  // ── Estados Principales ──────────────────────────────────────────
+  const [vista, setVista] = useState("tienda"); // 'tienda' | 'admin'
+  const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [carrito, setCarrito] = useState([]);
+  const [temaOscuro, setTemaOscuro] = useState(() => {
+    const temaGuardado = localStorage.getItem('temaOscuro');
+    return temaGuardado === 'true';
+  });
 
-  // ── Helpers internos ────────────────────────────────────────────
+  // ── Sincronizar Tema con el DOM ──────────────────────────────────
+  useEffect(() => {
+    document.documentElement.setAttribute('data-bs-theme', temaOscuro ? 'dark' : 'light');
+    localStorage.setItem('temaOscuro', temaOscuro);
+  }, [temaOscuro]);
 
-  /** Modifica el stock de un producto por su id (delta puede ser +1 o -1) */
+  // ── Llamadas API ────────────────────────────────────────────────
+  const fetchData = async () => {
+    try {
+      const resCat = await fetch("http://localhost:3000/api/categorias");
+      const cats = await resCat.json();
+      setCategorias(cats); 
+      
+      const resProd = await fetch("http://localhost:3000/api/productos");
+      const prods = await resProd.json();
+      
+      const productosMapeados = prods.map(p => {
+        const cat = cats.find(c => c.id === p.categoria_id);
+        const imagesArr = Array.isArray(p.imagenes) ? p.imagenes : [];
+        const fullUrls = imagesArr.filter(Boolean).map(ruta => `http://localhost:3000/uploads/${ruta}`);
+        
+        return {
+          id: p.id,
+          codigo: p.codigo_unico,
+          descripcion: p.nombre, 
+          precio: parseFloat(p.precio),
+          stock: p.stock,
+          categoria: cat ? cat.nombre : "Desconocida", 
+          imagenes: fullUrls
+        };
+      });
+      setProductos(productosMapeados);
+    } catch (err) {
+      console.error("Error al cargar datos de la API: ", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // ── Helpers de Admin ────────────────────────────────────────────
+  const manejarAccesoAdmin = () => {
+    const clave = window.prompt("Introduce la clave de acceso de administrador:");
+    if (clave === "123456") {
+      setVista("admin");
+    } else if (clave !== null && clave !== "") {
+      alert("Acceso denegado. Contraseña incorrecta.");
+    }
+  };
+
+  const agregarProducto = () => {
+    fetchData(); 
+  };
+
+  const agregarCategoria = () => {
+    fetchData(); 
+  };
+
+  // ── Acciones comunes y Carrito ──────────────────────────────────
   const actualizarStock = (productoId, delta) => {
     setProductos((prev) =>
       prev.map((p) =>
@@ -40,139 +92,125 @@ export default function App() {
     );
   };
 
-  // ── Acciones del carrito ─────────────────────────────────────────
-
-  /**
-   * Agregar al carrito:
-   * - Descuenta 1 unidad del stock en el catálogo.
-   * - Si el producto ya estaba en el carrito, incrementa su cantidad.
-   * - Si no, crea una nueva entrada con cantidad 1.
-   */
   const agregarAlCarrito = (productoId) => {
     const producto = productos.find((p) => p.id === productoId);
     if (!producto || producto.stock <= 0) return;
 
-    // Reducimos stock en catálogo
     actualizarStock(productoId, -1);
-
     setCarrito((prev) => {
       const existente = prev.find((item) => item.producto.id === productoId);
       if (existente) {
-        // Ya estaba: sólo aumentamos cantidad
         return prev.map((item) =>
           item.producto.id === productoId
             ? { ...item, cantidad: item.cantidad + 1 }
             : item
         );
       }
-      // Nuevo item en el carrito (guardamos snapshot del producto)
       return [...prev, { producto, cantidad: 1 }];
     });
   };
 
-  /**
-   * Incrementar desde el carrito (+1):
-   * Equivale a agregar una unidad más del mismo producto.
-   */
-  const incrementarEnCarrito = (productoId) => {
-    agregarAlCarrito(productoId);
-  };
-
-  /**
-   * Decrementar desde el carrito (-1):
-   * - Devuelve 1 unidad al stock del catálogo.
-   * - Si la cantidad llega a 0, elimina el item del carrito.
-   */
   const decrementarEnCarrito = (productoId) => {
     actualizarStock(productoId, +1);
-
     setCarrito((prev) => {
       const item = prev.find((i) => i.producto.id === productoId);
       if (!item) return prev;
-
       if (item.cantidad === 1) {
-        // Quitamos el item completamente
         return prev.filter((i) => i.producto.id !== productoId);
       }
-      // Restamos una unidad
       return prev.map((i) =>
-        i.producto.id === productoId
-          ? { ...i, cantidad: i.cantidad - 1 }
-          : i
+        i.producto.id === productoId ? { ...i, cantidad: i.cantidad - 1 } : i
       );
     });
   };
 
-  /**
-   * Realizar pedido:
-   * En producción haríamos un POST al backend.
-   * Por ahora mostramos un alert y limpiamos el estado.
-   */
   const realizarPedido = () => {
     const totalItems = carrito.reduce((acc, i) => acc + i.cantidad, 0);
-    const total = carrito
-      .reduce((acc, i) => acc + i.producto.precio * i.cantidad, 0)
-      .toFixed(2);
-
-    // ── Aquí iría el POST al backend: ──
-    // await axios.post("/api/pedidos", { items: carrito });
-
-    alert(
-      `✅ ¡Pedido realizado con éxito!\n\n` +
-        `Productos: ${totalItems}\n` +
-        `Total: ${total} €\n\n` +
-        `Recibirás un email de confirmación.`
-    );
-
-    // Restauramos el stock de los productos del carrito
-    setProductos((prevProductos) =>
-      prevProductos.map((p) => {
-        const itemEnCarrito = carrito.find((i) => i.producto.id === p.id);
-        if (itemEnCarrito) {
-          return { ...p, stock: p.stock + itemEnCarrito.cantidad };
-        }
-        return p;
-      })
-    );
-
+    const total = carrito.reduce((acc, i) => acc + i.producto.precio * i.cantidad, 0).toFixed(2);
+    alert(`✅ ¡Pedido realizado con éxito!\nProductos: ${totalItems}\nTotal: ${total} €\nRecibirás un email de confirmación.`);
+    
+    // Al realizar pedido, vaciamos el carrito permanentemente.
+    // (El stock en catálogo ya fue mermado cada vez que agregamos al carrito).
     setCarrito([]);
   };
 
-  // ── Render ───────────────────────────────────────────────────────
+  // ── Renderización Condicional (Router Manual) ───────────────────
+  if (vista === "admin") {
+    return (
+      <AdminPanel 
+        categorias={categorias}
+        onAgregarCategoria={agregarCategoria}
+        onAgregarProducto={agregarProducto}
+        onVolver={() => setVista("tienda")}
+      />
+    );
+  }
+
+  // ── Renderización Tienda ────────────────────────────────────────
+  const cantidadCarrito = carrito.reduce((acc, i) => acc + i.cantidad, 0);
+
   return (
-    <div className="app-wrapper">
-      {/* Navbar */}
-      <nav className="navbar navbar-dark bg-primary mb-4 shadow-sm">
-        <div className="container-fluid px-4">
-          <span className="navbar-brand fw-bold fs-4">
-            <i className="bi bi-shop me-2" />
-            TiendaApp
+    <div className="app-wrapper pb-5">
+      {/* Premium Header */}
+      <nav className="premium-header mb-4">
+        <div className="container-fluid px-2 px-md-5 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          
+          <span className="navbar-brand fs-4 fs-md-3 brand-title d-flex align-items-center gap-2 m-0 flex-shrink-0">
+            <i className="bi bi-box-seam text-primary" />
+            <span>Tienda App</span>
           </span>
-          <span className="text-white">
-            <i className="bi bi-cart3 me-1" />
-            {carrito.reduce((acc, i) => acc + i.cantidad, 0)} artículos
-          </span>
+          
+          <div className="d-flex align-items-center gap-2 gap-md-3 ms-auto">
+            <button 
+              onClick={() => setTemaOscuro(!temaOscuro)}
+              className={`btn rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center theme-toggle flex-shrink-0 ${temaOscuro ? 'btn-dark border-secondary' : 'btn-light'}`}
+              style={{ width: '38px', height: '38px' }}
+              title={temaOscuro ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+            >
+              <i className={`fs-5 bi ${temaOscuro ? 'bi-sun-fill text-warning' : 'bi-moon-stars-fill text-secondary'}`} />
+            </button>
+            <button 
+              className={`btn fw-bold shadow-sm flex-shrink-0 ${temaOscuro ? 'btn-outline-light' : 'btn-outline-primary bg-white'}`} 
+              onClick={manejarAccesoAdmin}>
+              <i className="bi bi-person-badge-fill me-1" /> 
+              <span className="d-none d-sm-inline">Panel Admin</span>
+              <span className="d-inline d-sm-none small">Admin</span>
+            </button>
+            
+            <div 
+              className={`cart-pill d-flex align-items-center gap-1 gap-md-2 flex-shrink-0 px-2 px-md-3 ${temaOscuro ? 'bg-dark border-secondary text-light' : 'bg-white'}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                const el = document.getElementById("seccion-carrito");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              title="Ir a mi cesta"
+            >
+              <i className="bi bi-cart3 text-primary fs-5" />
+              <span className="small fw-bold">
+                {cantidadCarrito} <span className="d-none d-md-inline fw-normal">artículos</span>
+              </span>
+            </div>
+          </div>
+          
         </div>
       </nav>
 
-      {/* Layout principal: Bootstrap grid */}
-      <div className="container-fluid px-4">
-        <div className="row g-4">
-          {/* ── Catálogo (8 columnas) ── */}
-          <div className="col-md-8">
-            <Catalogo
-              productos={productos}
-              onAgregarAlCarrito={agregarAlCarrito}
+      {/* Layout principal */}
+      <div className="container-fluid px-4 px-md-5">
+        <div className="row g-5">
+          <div className="col-lg-8 col-xl-9">
+            <Catalogo 
+              productos={productos} 
+              onAgregarAlCarrito={agregarAlCarrito} 
             />
           </div>
-
-          {/* ── Carrito (4 columnas) ── */}
-          <div className="col-md-4">
-            <Carrito
-              items={carrito}
-              onIncrementar={incrementarEnCarrito}
-              onDecrementar={decrementarEnCarrito}
-              onRealizarPedido={realizarPedido}
+          <div className="col-lg-4 col-xl-3" id="seccion-carrito">
+            <Carrito 
+              items={carrito} 
+              onIncrementar={agregarAlCarrito} 
+              onDecrementar={decrementarEnCarrito} 
+              onRealizarPedido={realizarPedido} 
             />
           </div>
         </div>

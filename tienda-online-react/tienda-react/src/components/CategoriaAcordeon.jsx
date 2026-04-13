@@ -12,39 +12,43 @@ export default function CategoriaAcordeon({
   productos,
   onAgregarAlCarrito,
 }) {
-  const [abierta, setAbierta] = useState(true); // Abiertas por defecto
+  const [abierta, setAbierta] = useState(true);
 
-  // Contamos cuántos productos quedan con stock para el badge informativo
   const conStock = productos.filter((p) => p.stock > 0).length;
 
   return (
-    <div className="categoria-acordeon mb-4">
+    <div className="mb-4">
       {/* ── Cabecera clicable ── */}
       <button
-        className="categoria-header w-100 d-flex justify-content-between align-items-center"
+        className="categoria-header w-100 d-flex justify-content-between align-items-center border-0"
         onClick={() => setAbierta((prev) => !prev)}
         aria-expanded={abierta}
       >
-        <span className="fs-5 fw-semibold">
-          <i className={`bi bi-chevron-${abierta ? "down" : "right"} me-2`} />
+        <span className="fs-5 fw-bold d-flex align-items-center gap-2">
+          <i
+            className={`bi bi-chevron-down text-primary transition-smooth`}
+            style={{ transform: abierta ? "rotate(0deg)" : "rotate(-90deg)", transition: "transform 0.3s ease" }}
+          />
           {categoria}
         </span>
-        <span className="badge bg-primary rounded-pill">
-          {conStock} / {productos.length} disponibles
+        <span className="badge rounded-pill px-3 py-2 fs-6">
+          {conStock} / {productos.length}
         </span>
       </button>
 
-      {/* ── Contenido con transición CSS via clase ── */}
-      <div className={`categoria-contenido ${abierta ? "visible" : "oculto"}`}>
-        <div className="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 pt-3">
-          {productos.map((producto) => (
-            <div className="col" key={producto.id}>
-              <ProductoCard
-                producto={producto}
-                onAgregarAlCarrito={onAgregarAlCarrito}
-              />
-            </div>
-          ))}
+      {/* ── Contenido con transición CSS grid via clase ── */}
+      <div className={`categoria-contenido ${abierta ? "" : "oculto"}`}>
+        <div> {/* Este div interno es necesario para que el grid-template-rows funcione correctamente (ocultando overflow) */}
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4 pt-3 pb-2 px-1">
+            {productos.map((producto) => (
+              <div className="col" key={producto.id}>
+                <ProductoCard
+                  producto={producto}
+                  onAgregarAlCarrito={onAgregarAlCarrito}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -11,6 +11,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Icons (instala con: npm install bootstrap-icons)
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+// Bootstrap JS Bundle (para que funcionen los modales)
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
