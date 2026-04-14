@@ -57,7 +57,7 @@ export default function App() {
       });
       setProductos(productosMapeados);
     } catch (err) {
-      console.error("Error al cargar datos de la API: ", err);
+      // Error silencioso
     }
   };
 

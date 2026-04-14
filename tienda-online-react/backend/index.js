@@ -1,4 +1,3 @@
-// node C:\Users\Usuario\Desktop\Master\Frameworks-Frontend\practica-intermedia\tienda-online\backend\index.js
 
 // Importa el framework Express
 const express = require('express');
@@ -55,10 +54,8 @@ const db = mysql.createConnection({
 //Inicia la conexión a la base de datos
 db.connect(err => {
     if (err) {
-        console.error('Error de conexión:', err);
         return;
     }
-    console.log('Conexión exitosa a MySQL');
 })
 
 
@@ -272,7 +269,6 @@ app.post('/api/productos', upload.array('imagenes', 10), (req, res) => {
             const sqlImg = "INSERT INTO imagenes_productos (producto_id, nombre_archivo, ruta) VALUES ?";
             db.query(sqlImg, [imagenesValores], (errImg) => {
                 if (errImg) {
-                    console.error("Error guardando imágenes:", errImg);
                     return res.status(201).json({ 
                         mensaje: "Producto creado, pero hubo un error con las imágenes", 
                         id: insertId,
@@ -301,7 +297,6 @@ app.put('/api/productos/:id', upload.array('imagenes_nuevas', 10), (req, res) =>
     // Permite aceptar datos en form-data o json
     const { nombre, descripcion, precio, stock, categoria_id } = req.body;
     
-    // Eliminamos 'imagen_url' que ya no existe
     const sqlUpdate = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, stock = ?, categoria_id = ? WHERE id = ?";
     const sqlGet = `
         SELECT p.*, 

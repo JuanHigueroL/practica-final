@@ -35,7 +35,7 @@ export default function AdminPanel({ categorias, onAgregarCategoria, onAgregarPr
           alert(`Error: ${data.mensaje || 'No se pudo añadir la categoría'}`);
         }
       } catch (err) {
-        console.error("Error al añadir categoría: ", err);
+        // Error silenciado
       }
     }
   };
@@ -90,7 +90,6 @@ export default function AdminPanel({ categorias, onAgregarCategoria, onAgregarPr
       setImagenesPreviews([]);
       alert('Producto añadido con éxito al backend y catálogo.');
     } catch(err) {
-      console.error(err);
       alert('Error: ' + err.message);
     }
   };
