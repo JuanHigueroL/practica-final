@@ -1,8 +1,20 @@
 /**
  * Carrito.jsx
- * Columna derecha: muestra los items añadidos, permite modificar cantidades
- * (incrementar / decrementar) y lanza el pedido.
- */
+  El componente Carrito representa la columna derecha de la tienda. Recibe los productos 
+  seleccionados (items) y las funciones para modificar cantidades o finalizar la compra.
+  Su funcionamiento es el siguiente:
+  
+  - Calcula el precio total sumando el precio por la cantidad de cada artículo.
+  - Verifica si la cesta está vacía para mostrar un mensaje relacionado o la lista de  
+    productos.
+  - Renderiza la cabecera mostrando el número total de unidades.
+  - Utiliza un bucle .map() para dibujar cada línea de producto, mostrando su foto en miniatura, 
+    descripción truncada, precio unitario y precio total de la fila.
+  - Incluye botones "+" y "-" para cada artículo, conectados a las funciones onIncrementar y 
+    onDecrementar, bloqueando el botón "+" si ya no queda stock en el almacén principal.
+  - Muestra un desglose final en la parte inferior con el subtotal, el envío gratuito y el botón 
+    principal que ejecuta onRealizarPedido para finalizar la compra.
+*/
 
 import React from "react";
 
@@ -12,13 +24,17 @@ export default function Carrito({
   onDecrementar,
   onRealizarPedido,
 }) {
+  // Calcula el precio total del carrito multiplicando el precio de cada producto por 
+  // su cantidad y sumando todos los resultados. Todo esto se hace con reduce.
   const total = items.reduce(
     (acc, { producto, cantidad }) => acc + producto.precio * cantidad,
     0
   );
 
+  // Comprueba si el carrito está vacío
   const carritoVacio = items.length === 0;
 
+  // Devuelve el layout del carrito
   return (
     <div className="carrito-panel">
       <h4 className="mb-4 d-flex align-items-center">
@@ -34,7 +50,7 @@ export default function Carrito({
       {/* ── Estado vacío ── */}
       {carritoVacio ? (
         <div className="text-center text-muted py-5 d-flex flex-column align-items-center">
-          <div className="bg-light rounded-circle d-flex justify-content-center align-items-center mb-3" style={{width: '80px', height: '80px'}}>
+          <div className="bg-light rounded-circle d-flex justify-content-center align-items-center mb-3" style={{ width: '80px', height: '80px' }}>
             <i className="bi bi-cart-x text-secondary" style={{ fontSize: "2.5rem" }} />
           </div>
           <p className="fs-5 fw-medium mb-1">Tu cesta está vacía</p>
@@ -65,7 +81,7 @@ export default function Carrito({
 
                   {/* Columna derecha con Textos arriba y Controles abajo (a prueba de desbordes) */}
                   <div className="d-flex flex-column flex-grow-1" style={{ minWidth: 0 }}>
-                    
+
                     {/* Textos: Nombre truncado seguro gracias al minWidth: 0 */}
                     <p className="mb-0 fw-bold text-truncate" title={producto.descripcion}>
                       {producto.descripcion}
@@ -76,33 +92,33 @@ export default function Carrito({
 
                     {/* Fila del precio total e incrementadores envueltos horizontalmente */}
                     <div className="d-flex flex-wrap justify-content-between align-items-center mt-auto gap-2">
-                       <span className="fw-bolder text-primary">
-                         {(producto.precio * cantidad).toFixed(2)} €
-                       </span>
+                      <span className="fw-bolder text-primary">
+                        {(producto.precio * cantidad).toFixed(2)} €
+                      </span>
 
-                       {/* Bloque de botones protegidos contra encogimiento con flex-shrink-0 */}
-                       <div className="d-flex align-items-center gap-2 bg-secondary bg-opacity-10 p-1 rounded-pill flex-shrink-0">
-                         <button
-                           className="btn btn-sm btn-xs border-0 rounded-circle d-flex align-items-center justify-content-center bg-body shadow-sm text-danger"
-                           onClick={() => onDecrementar(producto.id)}
-                           title="Quitar uno"
-                           style={{ width: "26px", height: "26px" }}
-                         >
-                           <i className="bi bi-dash-lg fw-bold" />
-                         </button>
-                         <span className="fw-bold small d-inline-block text-center" style={{minWidth: '20px'}}>
-                           {cantidad}
-                         </span>
-                         <button
-                           className="btn btn-sm btn-xs border-0 rounded-circle d-flex align-items-center justify-content-center bg-body shadow-sm text-primary"
-                           onClick={() => onIncrementar(producto.id)}
-                           title="Añadir uno más"
-                           disabled={producto.stock <= 0}
-                           style={{ width: "26px", height: "26px" }}
-                         >
-                           <i className="bi bi-plus-lg fw-bold" />
-                         </button>
-                       </div>
+                      {/* Bloque de botones protegidos contra encogimiento con flex-shrink-0 */}
+                      <div className="d-flex align-items-center gap-2 bg-secondary bg-opacity-10 p-1 rounded-pill flex-shrink-0">
+                        <button
+                          className="btn btn-sm btn-xs border-0 rounded-circle d-flex align-items-center justify-content-center bg-body shadow-sm text-danger"
+                          onClick={() => onDecrementar(producto.id)}
+                          title="Quitar uno"
+                          style={{ width: "26px", height: "26px" }}
+                        >
+                          <i className="bi bi-dash-lg fw-bold" />
+                        </button>
+                        <span className="fw-bold small d-inline-block text-center" style={{ minWidth: '20px' }}>
+                          {cantidad}
+                        </span>
+                        <button
+                          className="btn btn-sm btn-xs border-0 rounded-circle d-flex align-items-center justify-content-center bg-body shadow-sm text-primary"
+                          onClick={() => onIncrementar(producto.id)}
+                          title="Añadir uno más"
+                          disabled={producto.stock <= 0}
+                          style={{ width: "26px", height: "26px" }}
+                        >
+                          <i className="bi bi-plus-lg fw-bold" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -122,8 +138,8 @@ export default function Carrito({
             </div>
             <hr className="my-2 opacity-10" />
             <div className="d-flex justify-content-between align-items-center mt-2">
-               <span className="fw-bold fs-5">Total</span>
-               <span className="fs-4 fw-bolder text-primary">{total.toFixed(2)} €</span>
+              <span className="fw-bold fs-5">Total</span>
+              <span className="fs-4 fw-bolder text-primary">{total.toFixed(2)} €</span>
             </div>
           </div>
 

@@ -1,7 +1,9 @@
 /**
  * main.jsx
  * Punto de entrada estándar de Vite + React.
- * Importamos Bootstrap 5 CSS aquí para que esté disponible globalmente.
+ * Importamos Bootstrap 5 CSS aquí para que esté disponible globalmente y se llama
+ * a App.jsx que contiene toda la lógica de la aplicación, de esta forma 
+ * mantenemos la aplicación organizada y modular
  */
 
 import React from "react";

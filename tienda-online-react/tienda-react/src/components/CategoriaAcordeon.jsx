@@ -1,24 +1,30 @@
 /**
  * CategoriaAcordeon.jsx
- * Muestra el nombre de la categoría como cabecera clicable (acordeón)
- * y la cuadrícula de productos debajo con transición de altura CSS.
+ 
+  Este componente del catálogo recibe la categoría, los productos que la contienen y la función
+  onAgregarAlCarrito. Lo que hace exactamente es:
+  
+  - Crear un estado de abierto o cerrado para que, al hacer clic, se le dé la vuelta al icono de
+    la flecha y a su vez cambie la visibilidad del contenido.
+  - Calcular la variable conStock, que filtra y cuenta cuántos productos de esa sección tienen
+    unidades disponibles (> 0).
+  - Mostrar en la cabecera el nombre de la categoría junto a un marcador visual (conStock /
+    total de productos), informando de la disponibilidad de un vistazo.
+  - Mostrar justo debajo la cuadrícula con sus productos correspondientes, dibujando un
+    componente ProductoCard por cada artículo cuando el menú está desplegado.
+
  */
 
 import React, { useState } from "react";
 import ProductoCard from "./ProductoCard";
 
-export default function CategoriaAcordeon({
-  categoria,
-  productos,
-  onAgregarAlCarrito,
-}) {
+export default function CategoriaAcordeon({ categoria, productos, onAgregarAlCarrito }) {
   const [abierta, setAbierta] = useState(true);
 
   const conStock = productos.filter((p) => p.stock > 0).length;
 
   return (
     <div className="mb-4">
-      {/* ── Cabecera clicable ── */}
       <button
         className="categoria-header w-100 d-flex justify-content-between align-items-center border-0"
         onClick={() => setAbierta((prev) => !prev)}
@@ -36,9 +42,8 @@ export default function CategoriaAcordeon({
         </span>
       </button>
 
-      {/* ── Contenido con transición CSS grid via clase ── */}
       <div className={`categoria-contenido ${abierta ? "" : "oculto"}`}>
-        <div> {/* Este div interno es necesario para que el grid-template-rows funcione correctamente (ocultando overflow) */}
+        <div>
           <div className="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4 pt-3 pb-2 px-1">
             {productos.map((producto) => (
               <div className="col" key={producto.id}>
