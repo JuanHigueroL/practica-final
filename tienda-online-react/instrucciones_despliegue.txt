@@ -1,0 +1,32 @@
+GUÍA DE DESPLIEGUE Y PRUEBA DE LA APLICACIÓN
+
+Sigue estos pasos en el orden indicado para poner en marcha la aplicación (Backend, Frontend y Base de Datos).
+
+1. REQUISITOS PREVIOS
+   - Tener instalado Node.js (versión 16 o superior).
+   - Tener instalado y en ejecución MySQL Server.
+
+2. CONFIGURACIÓN DE LA BASE DE DATOS (MySQL)
+   - Abrir el gestor de bases de datos (MySQL Workbench o similar).
+   - Crear una nueva base de datos.
+   - Ejecutar el script SQL proporcionado en los archivos para crear automáticamente las tablas y la estructura necesaria.
+   - Verificar en el archivo de configuración del backend que las credenciales (usuario y contraseña de MySQL) coinciden con las de la instalación local.
+
+3. DESPLIEGUE DEL BACKEND (Servidor)
+   - Abrir una terminal en la carpeta 'backend'.
+   - Ejecutar el comando: npm install
+     (Esto instalará todas las dependencias necesarias: Express, MySQL2, Multer, Cors, etc.)
+   - Una vez finalizada la instalación, iniciar el servidor con: node index.js
+   - El servidor estará escuchando en http://localhost:3000. No cerrar esta terminal.
+
+4. DESPLIEGUE DEL FRONTEND (Interfaz)
+   - Abrir una nueva terminal en la carpeta 'frontend'.
+   - Ejecutar el comando: npm install
+     (Esto instalará las dependencias de React y los componentes visuales).
+   - Una vez finalizada la instalación, iniciar la aplicación con: npm run dev
+   - La aplicación se abrirá en el navegador (normalmente en http://localhost:5173 o http://localhost:3000).
+
+5. NOTAS PARA LA PRUEBA
+   - La tienda cargará los productos iniciales desde la base de datos.
+   - Para añadir nuevos productos o categorías, acceder al botón de "Admin" en la interfaz.
+   - Al añadir productos con imágenes, estas se guardarán en la carpeta de subidas del backend.
