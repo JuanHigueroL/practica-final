@@ -1,1 +1,213 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ======================================================
+   styles.css — Estilos Premium y Modernos de TiendaApp
+   ====================================================== */
+
+:root {
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary-bg: #f3f4f6;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 25px 35px -5px rgba(79, 70, 229, 0.15), 0 15px 15px -5px rgba(79, 70, 229, 0.05);
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --bg-grad-1: rgb(240, 246, 255);
+  --bg-grad-2: rgb(248, 250, 252);
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  background-color: var(--secondary-bg);
+  background-image: radial-gradient(circle at 10% 20%, var(--bg-grad-1) 0%, var(--bg-grad-2) 90%);
+  min-height: 100vh;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  transition: var(--transition-smooth);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+/* ── Layout general ─────────────────────────────────────── */
+.app-wrapper {
+  padding-bottom: 3rem;
+}
+
+/* ── Header Premium ─────────────────────────────────────── */
+.premium-header {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  padding: 1rem 0;
+  margin-bottom: 2.5rem;
+}
+
+.brand-title {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.cart-pill {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-main);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.cart-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Carrito sticky ─────────────────────────────────────── */
+.carrito-panel {
+  top: 6rem;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  transition: var(--transition-smooth);
+}
+
+/* ── Tarjeta de producto ────────────────────────────────── */
+.producto-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-smooth);
+  height: 100%;
+}
+
+.producto-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(79, 70, 229, 0.2);
+}
+
+.producto-card.sin-stock {
+  opacity: 0.65;
+  filter: grayscale(80%);
+}
+
+.producto-card .card-body {
+  padding: 1.25rem;
+}
+
+/* ── Contenedor de imagen con efecto hover ──────────────── */
+.imagen-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 240px;
+  background-color: var(--secondary-bg);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.producto-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+  background-color: #ffffff;
+}
+
+.imagen-wrapper:hover .producto-imagen {
+  transform: scale(1.15);
+}
+
+/* ── Categoría acordeón ─────────────────────────────────── */
+.categoria-header {
+  background: var(--card-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  color: var(--text-main);
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 0.5rem;
+}
+
+.categoria-header:hover {
+  background: #ffffff;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.categoria-header .badge {
+  background-color: rgba(79, 70, 229, 0.1) !important;
+  color: var(--primary-color) !important;
+  font-weight: 700;
+}
+
+/* Acordeón: transición suave */
+.categoria-contenido {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.4s ease, opacity 0.4s ease;
+  opacity: 1;
+}
+
+.categoria-contenido>div {
+  overflow: hidden;
+}
+
+.categoria-contenido.oculto {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* ── Responsive: carrito debajo en móvil ────────────────── */
+@media (max-width: 767px) {
+  .carrito-panel {
+    position: static;
+    margin-top: 2rem;
+  }
+}
