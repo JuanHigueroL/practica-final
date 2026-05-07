@@ -9,11 +9,7 @@
   <!-- Contenedor de la imagen. Solo primera foto estática por requerimiento. -->
   <div class="imagen-wrapper">
     <ng-container *ngIf="producto().imagenes && producto().imagenes.length > 0; else noImage">
-      <img
-        [src]="producto().imagenes[0]"
-        [alt]="producto().descripcion"
-        class="producto-imagen"
-      />
+      <img [src]="producto().imagenes[0]" [alt]="producto().descripcion" class="producto-imagen" />
     </ng-container>
     <ng-template #noImage>
       <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center text-muted bg-light">
@@ -37,13 +33,9 @@
         </div>
       </div>
 
-      <button
-        class="btn btn-primary rounded-circle p-2 d-flex justify-content-center align-items-center"
-        style="width: 45px; height: 45px;"
-        [disabled]="sinStock()"
-        (click)="agregarAlCarrito()"
-        [title]="sinStock() ? 'Producto agotado' : 'Añadir al carrito'"
-      >
+      <button class="btn btn-primary rounded-circle p-2 d-flex justify-content-center align-items-center"
+        style="width: 45px; height: 45px;" [disabled]="sinStock()" (click)="agregarAlCarrito()"
+        [title]="sinStock() ? 'Producto agotado' : 'Añadir al carrito'">
         <ng-container *ngIf="sinStock(); else canBuy">
           <i class="bi bi-x-lg fs-5"></i>
         </ng-container>
