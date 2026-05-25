@@ -31,6 +31,47 @@ body {
   min-height: 100vh;
 }
 
+[data-bs-theme="dark"] {
+  --secondary-bg: #111827;
+  --card-bg: rgba(31, 41, 55, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --bg-grad-1: rgb(17, 24, 39);
+  --bg-grad-2: rgb(31, 41, 55);
+}
+
+[data-bs-theme="dark"] .producto-card,
+[data-bs-theme="dark"] .carrito-panel,
+[data-bs-theme="dark"] .premium-header,
+[data-bs-theme="dark"] .cart-pill {
+  background: #1f2937 !important;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+[data-bs-theme="dark"] .producto-imagen {
+  background-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .categoria-header:hover {
+  background: #374151;
+}
+
+[data-bs-theme="dark"] .carrito-item-row:hover {
+  background-color: #374151;
+}
+
+[data-bs-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .bg-light {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-bs-theme="dark"] .text-muted {
+  color: #9ca3af !important;
+}
+
 .text-primary {
   color: var(--primary-color) !important;
 }
@@ -142,6 +183,7 @@ body {
   overflow: hidden;
   height: 240px;
   background-color: var(--secondary-bg);
+  cursor: pointer;
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
@@ -156,6 +198,39 @@ body {
 
 .imagen-wrapper:hover .producto-imagen {
   transform: scale(1.15);
+}
+
+/* ── Indicadores del carrusel (bolitas) ─────────────────── */
+.imagen-indicadores {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 6px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.imagen-wrapper:hover .imagen-indicadores {
+  opacity: 1;
+}
+
+.indicador {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.indicador.activo {
+  background: #ffffff;
+  transform: scale(1.25);
 }
 
 /* ── Categoría acordeón ─────────────────────────────────── */

@@ -6,10 +6,19 @@
     </span>
   </div>
 
-  <!-- Contenedor de la imagen. Solo primera foto estática por requerimiento. -->
-  <div class="imagen-wrapper">
+  <!-- Contenedor de la imagen. Carrusel interactivo en hover. -->
+  <div class="imagen-wrapper" (mouseenter)="iniciarCarrusel()" (mouseleave)="detenerCarrusel()">
     <ng-container *ngIf="producto().imagenes && producto().imagenes.length > 0; else noImage">
-      <img [src]="producto().imagenes[0]" [alt]="producto().descripcion" class="producto-imagen" />
+      <img [src]="producto().imagenes[imagenActual()]" [alt]="producto().descripcion" class="producto-imagen" />
+      
+      <!-- Indicadores de imagen (bolitas) -->
+      @if (producto().imagenes.length > 1) {
+        <div class="imagen-indicadores">
+          @for (img of producto().imagenes; track $index) {
+            <span class="indicador" [class.activo]="$index === imagenActual()"></span>
+          }
+        </div>
+      }
     </ng-container>
     <ng-template #noImage>
       <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center text-muted bg-light">

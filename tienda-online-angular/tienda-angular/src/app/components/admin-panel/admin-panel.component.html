@@ -1,0 +1,163 @@
+<div class="container-fluid min-vh-100 bg-light py-5 text-body">
+  <div class="container">
+
+    <!-- Encabezado del Panel de Administración -->
+    <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-4">
+      <h1 class="fw-bold mb-0 d-flex align-items-center gap-3">
+        <i class="bi bi-gear-fill text-primary"></i>
+        Panel de Administración
+      </h1>
+      <button class="btn btn-primary fw-bold px-4 py-2 shadow-sm rounded-pill d-flex align-items-center gap-2" (click)="onVolverClick()">
+        <i class="bi bi-arrow-left"></i>
+        Volver a la Tienda
+      </button>
+    </div>
+
+    <div class="row g-4">
+      <!-- COLUMNA IZQUIERDA: GESTIÓN DE CATEGORÍAS -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+          <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+            <h5 class="fw-bold"><i class="bi bi-tags-fill text-primary me-2"></i>Gestión de Categorías</h5>
+          </div>
+          <div class="card-body p-4">
+            <form (submit)="handleAgregarCategoria($event)" class="mb-4">
+              <label class="form-label text-muted small fw-bold">Añadir Nueva Categoría</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control bg-light border-0"
+                  placeholder="Ej: Deportes"
+                  [(ngModel)]="nuevaCategoria"
+                  name="nuevaCategoria"
+                  required
+                />
+                <button class="btn btn-primary fw-bold" type="submit">
+                  <i class="bi bi-plus-lg"></i> Añadir
+                </button>
+              </div>
+            </form>
+
+            <h6 class="fw-bold text-muted mb-3 small">Categorías Activas</h6>
+            <div class="d-flex flex-wrap gap-2">
+              @for (cat of categorias; track cat.id) {
+                <span class="badge bg-secondary bg-opacity-25 text-body fs-6 py-2 px-3 fw-medium rounded-pill border">
+                  {{ cat.nombre }}
+                </span>
+              } @empty {
+                <span class="text-muted small">No hay categorías registradas.</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: AÑADIR PRODUCTO NUEVO -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4">
+            <h5 class="fw-bold"><i class="bi bi-box-seam-fill text-primary me-2"></i>Añadir Nuevo Producto</h5>
+            <p class="text-muted small mb-0">Rellena los detalles para añadir un producto al catálogo principal.</p>
+          </div>
+          <div class="card-body p-4">
+            <form (submit)="handleSubmit($event)" class="row g-4">
+
+              <!-- Código -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Código del Producto</label>
+                <input type="text" class="form-control bg-light border-0 py-2" [(ngModel)]="formData.codigo" name="codigo" required placeholder="Ej: PRD-001" />
+              </div>
+
+              <!-- Categoría Dinámica -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Categoría</label>
+                <select class="form-select bg-light border-0 py-2" [(ngModel)]="formData.categoria" name="categoria" required>
+                  <option value="" disabled>Selecciona una categoría...</option>
+                  @for (cat of categorias; track cat.id) {
+                    <option [value]="cat.id">{{ cat.nombre }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Descripción -->
+              <div class="col-12">
+                <label class="form-label fw-bold">Descripción / Nombre</label>
+                <input type="text" class="form-control bg-light border-0 py-2" [(ngModel)]="formData.descripcion" name="descripcion" required placeholder="Escribe un título descriptivo..." />
+              </div>
+
+              <!-- Precio -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Precio Unitario (€)</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-0 text-muted">€</span>
+                  <input type="number" step="0.01" min="0" class="form-control bg-light border-0 py-2" [(ngModel)]="formData.precio" name="precio" required placeholder="0.00" />
+                </div>
+              </div>
+
+              <!-- Stock -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Stock Inicial</label>
+                <input type="number" min="1" class="form-control bg-light border-0 py-2" [(ngModel)]="formData.stock" name="stock" required placeholder="10" />
+              </div>
+
+              <!-- Input de Archivos (Imágenes) -->
+              <div class="col-12">
+                <label class="form-label fw-bold">Fotografías del Producto</label>
+                <div class="rounded-4 p-4 text-center bg-light mt-1 position-relative" style="border: 2px dashed #dee2e6;">
+                  <i class="bi bi-cloud-arrow-up text-primary fs-1 mb-2 d-block"></i>
+                  <h6 class="fw-bold mb-1">Arrastra imágenes o haz clic para seleccionarlas</h6>
+                  <p class="text-muted small mb-0">Formato JPG o PNG. Hasta 10 imágenes.</p>
+
+                  <input
+                    type="file"
+                    multiple
+                    class="form-control position-absolute w-100 h-100 opacity-0"
+                    style="top: 0; left: 0; cursor: pointer;"
+                    accept="image/*"
+                    (change)="handleFileChange($event)"
+                    title="Selecciona imágenes para el producto"
+                    [required]="imagenesArchivos.length === 0"
+                  />
+                </div>
+              </div>
+
+              <!-- Previsualización Imágenes (Botón de eliminar incluido) -->
+              @if (imagenesPreviews.length > 0) {
+                <div class="col-12">
+                  <label class="form-label fw-bold text-muted small">Imágenes Seleccionadas</label>
+                  <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded-4 border">
+                    @for (preview of imagenesPreviews; track $index) {
+                      <div class="position-relative" style="width: 80px; height: 80px;">
+                        <img [src]="preview" alt="Preview" class="w-100 h-100 object-fit-cover rounded shadow-sm border" />
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-danger position-absolute rounded-circle p-0 d-flex align-items-center justify-content-center shadow"
+                          style="top: -8px; right: -8px; width: 24px; height: 24px;"
+                          (click)="handleEliminarImagen($index)"
+                          title="Eliminar imagen"
+                        >
+                          <i class="bi bi-x fw-bold"></i>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Acciones del formulario -->
+              <div class="col-12 mt-4 pt-3 border-top">
+                <div class="d-flex justify-content-end gap-3">
+                  <button type="submit" class="btn btn-primary px-5 py-2 fw-bold rounded-pill shadow-sm d-flex align-items-center gap-2">
+                    <i class="bi bi-send-check-fill"></i> Publicar Producto
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

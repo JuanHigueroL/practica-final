@@ -1,46 +1,74 @@
-<div class="app-wrapper pb-5">
-  <nav class="premium-header mb-4">
-    <div class="container-fluid px-2 px-md-5 d-flex justify-content-between align-items-center flex-wrap gap-2">
+@if (vista() === 'admin') {
+  <app-admin-panel (volver)="vista.set('tienda')"></app-admin-panel>
+} @else {
+  <div class="app-wrapper pb-5">
+    <nav class="premium-header mb-4">
+      <div class="container-fluid px-2 px-md-5 d-flex justify-content-between align-items-center flex-wrap gap-2">
 
-      <span class="navbar-brand fs-4 fs-md-3 brand-title d-flex align-items-center gap-2 m-0 flex-shrink-0">
-        <i class="bi bi-box-seam text-primary"></i>
-        <span>Tienda App (Angular)</span>
-      </span>
+        <span class="navbar-brand fs-4 fs-md-3 brand-title d-flex align-items-center gap-2 m-0 flex-shrink-0">
+          <i class="bi bi-box-seam text-primary"></i>
+          <span>Tienda App (Angular)</span>
+        </span>
 
-      <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto">
-        <button
-          class="btn rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center theme-toggle flex-shrink-0 btn-light"
-          style="width: 38px; height: 38px;" title="Modo oscuro no implementado" disabled>
-          <i class="fs-5 bi bi-moon-stars-fill text-secondary"></i>
-        </button>
+        <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto">
+          <button
+            (click)="themeService.toggleTema()"
+            class="btn rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center theme-toggle flex-shrink-0"
+            [class.btn-dark]="themeService.temaOscuro()"
+            [class.border-secondary]="themeService.temaOscuro()"
+            [class.btn-light]="!themeService.temaOscuro()"
+            style="width: 38px; height: 38px;"
+            [title]="themeService.temaOscuro() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+          >
+            <i class="fs-5 bi"
+               [class.bi-sun-fill]="themeService.temaOscuro()"
+               [class.text-warning]="themeService.temaOscuro()"
+               [class.bi-moon-stars-fill]="!themeService.temaOscuro()"
+               [class.text-secondary]="!themeService.temaOscuro()"
+            ></i>
+          </button>
 
-        <button class="btn fw-bold shadow-sm flex-shrink-0 btn-outline-primary bg-white" disabled
-          title="Panel Admin no implementado">
-          <i class="bi bi-person-badge-fill me-1"></i>
-          <span class="d-none d-sm-inline">Panel Admin</span>
-          <span class="d-inline d-sm-none small">Admin</span>
-        </button>
+          <button
+            class="btn fw-bold shadow-sm flex-shrink-0"
+            [class.btn-outline-light]="themeService.temaOscuro()"
+            [class.btn-outline-primary]="!themeService.temaOscuro()"
+            [class.bg-white]="!themeService.temaOscuro()"
+            (click)="manejarAccesoAdmin()"
+          >
+            <i class="bi bi-person-badge-fill me-1"></i>
+            <span class="d-none d-sm-inline">Panel Admin</span>
+            <span class="d-inline d-sm-none small">Admin</span>
+          </button>
 
-        <div class="cart-pill d-flex align-items-center gap-1 gap-md-2 flex-shrink-0 px-2 px-md-3 bg-white"
-          style="cursor: pointer;" title="Ir a mi cesta">
-          <i class="bi bi-cart3 text-primary fs-5"></i>
-          <span class="small fw-bold">
-            {{ carritoService.cantidadItems() }} <span class="d-none d-md-inline fw-normal">artículos</span>
-          </span>
+          <div
+            class="cart-pill d-flex align-items-center gap-1 gap-md-2 flex-shrink-0 px-2 px-md-3"
+            [class.bg-dark]="themeService.temaOscuro()"
+            [class.border-secondary]="themeService.temaOscuro()"
+            [class.text-light]="themeService.temaOscuro()"
+            [class.bg-white]="!themeService.temaOscuro()"
+            style="cursor: pointer;"
+            (click)="seccionCarrito.scrollIntoView({ behavior: 'smooth' })"
+            title="Ir a mi cesta"
+          >
+            <i class="bi bi-cart3 text-primary fs-5"></i>
+            <span class="small fw-bold">
+              {{ carritoService.cantidadItems() }} <span class="d-none d-md-inline fw-normal">artículos</span>
+            </span>
+          </div>
         </div>
-      </div>
 
-    </div>
-  </nav>
-
-  <div class="container-fluid px-4 px-md-5">
-    <div class="row g-5">
-      <div class="col-lg-8 col-xl-9">
-        <app-catalogo [productos]="productos()"></app-catalogo>
       </div>
-      <div class="col-lg-4 col-xl-3" id="seccion-carrito">
-        <app-carrito></app-carrito>
+    </nav>
+
+    <div class="container-fluid px-4 px-md-5">
+      <div class="row g-5">
+        <div class="col-lg-8 col-xl-9">
+          <app-catalogo [productos]="productos()"></app-catalogo>
+        </div>
+        <div class="col-lg-4 col-xl-3" #seccionCarrito id="seccion-carrito">
+          <app-carrito></app-carrito>
+        </div>
       </div>
     </div>
   </div>
-</div>
+}
