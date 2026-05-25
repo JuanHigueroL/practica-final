@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CarritoService } from '../../services/carrito.service';
 
 @Component({
   selector: 'app-carrito',
@@ -9,7 +10,5 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./carrito.component.css']
 })
 export class CarritoComponent {
-  // Mock data para la Fase 1
-  cantidadItems = 0;
-  total = 0;
+  carritoService = inject(CarritoService);
 }

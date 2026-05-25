@@ -1,13 +1,15 @@
 <div class="carrito-panel">
-  <div class="d-flex align-items-center justify-content-between mb-4 border-bottom border-light pb-3" style="border-bottom-color: rgba(0,0,0,0.05);">
+  <div class="d-flex align-items-center justify-content-between mb-4 border-bottom border-light pb-3"
+    style="border-bottom-color: rgba(0,0,0,0.05);">
     <h4 class="mb-0 fw-bold d-flex align-items-center gap-2">
       <i class="bi bi-cart3 text-primary"></i> Mi Cesta
     </h4>
     <span class="badge bg-primary rounded-pill px-3 py-2 fs-6 shadow-sm">
-      {{ cantidadItems }} ítems
+      {{ carritoService.cantidadItems() }} ítems
     </span>
   </div>
 
+  @if (carritoService.carrito().length === 0) {
   <div class="text-center py-5 text-muted fade-enter">
     <div class="mb-3">
       <i class="bi bi-cart-x text-secondary" style="font-size: 3.5rem; opacity: 0.5;"></i>
@@ -15,15 +17,69 @@
     <h5 class="fw-semibold">Tu cesta está vacía</h5>
     <p class="small mb-0">¡Explora nuestro catálogo y añade productos increíbles!</p>
   </div>
+  } @else {
+  <div class="carrito-items-container fade-enter">
+    @for (item of carritoService.carrito(); track item.producto.id) {
+    <div class="carrito-item-row p-3 border bg-white mb-3">
+      <div class="d-flex align-items-start gap-3">
+        <ng-container *ngIf="item.producto.imagenes && item.producto.imagenes.length > 0; else noImageCart">
+          <img [src]="item.producto.imagenes[0]" alt="{{item.producto.descripcion}}"
+            class="carrito-miniatura flex-shrink-0">
+        </ng-container>
+        <ng-template #noImageCart>
+          <div
+            class="carrito-miniatura flex-shrink-0 d-flex justify-content-center align-items-center bg-secondary bg-opacity-10 border text-muted">
+            <i class="bi bi-image" style="font-size: 1.2rem; opacity: 0.5;"></i>
+          </div>
+        </ng-template>
+
+        <div class="d-flex flex-column flex-grow-1" style="min-width: 0;">
+          <p class="mb-0 fw-bold text-truncate" [title]="item.producto.descripcion">
+            {{item.producto.descripcion}}
+          </p>
+          <p class="mb-2 text-muted small fw-medium">
+            {{ item.producto.precio | number:'1.2-2' }} € × {{ item.cantidad }}
+          </p>
+
+          <div class="d-flex flex-wrap justify-content-between align-items-center mt-auto gap-2">
+            <span class="fw-bolder text-primary">
+              {{ (item.producto.precio * item.cantidad) | number:'1.2-2' }} €
+            </span>
+
+            <div class="d-flex align-items-center gap-2 bg-secondary bg-opacity-10 p-1 rounded-pill flex-shrink-0">
+              <button
+                class="btn btn-sm btn-xs border-0 rounded-circle d-flex align-items-center justify-content-center bg-body shadow-sm text-danger"
+                (click)="carritoService.decrementarEnCarrito(item.producto.id)" title="Quitar uno"
+                style="width: 26px; height: 26px;">
+                <i class="bi bi-dash-lg fw-bold"></i>
+              </button>
+              <span class="fw-bold small d-inline-block text-center" style="min-width: 20px;">
+                {{ item.cantidad }}
+              </span>
+              <button
+                class="btn btn-sm btn-xs border-0 rounded-circle d-flex align-items-center justify-content-center bg-body shadow-sm text-primary"
+                (click)="carritoService.agregarAlCarrito(item.producto.id)" [disabled]="item.producto.stock <= 0"
+                title="Añadir uno más" style="width: 26px; height: 26px;">
+                <i class="bi bi-plus-lg fw-bold"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  }
 
   <div class="mt-4 pt-3 border-top border-light" style="border-top-color: rgba(0,0,0,0.05);">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <span class="text-muted fw-semibold">Total a pagar:</span>
-      <span class="fs-3 fw-bolder text-primary">{{ total | number:'1.2-2' }} €</span>
+      <span class="fs-3 fw-bolder text-primary">{{ carritoService.total() | number:'1.2-2' }} €</span>
     </div>
-    
+
     <button class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2"
-            style="border-radius: 12px; font-size: 1.1rem;" disabled>
+      style="border-radius: 12px; font-size: 1.1rem;" [disabled]="carritoService.carrito().length === 0"
+      (click)="carritoService.realizarPedido()">
       <span>Realizar Pedido</span>
       <i class="bi bi-arrow-right-circle-fill"></i>
     </button>

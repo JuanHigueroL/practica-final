@@ -1,1 +1,27 @@
 /* Estilos específicos */
+
+/* ── Botones pequeños en el carrito ─────────────────────── */
+.btn-xs {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1;
+  border-radius: 6px;
+}
+
+/* ── Miniatura en el carrito ────────────────────────────── */
+.carrito-miniatura {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.carrito-item-row {
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+.carrito-item-row:hover {
+  background-color: #f8fafc;
+}

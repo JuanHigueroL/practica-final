@@ -13,10 +13,10 @@
  * la información en el `signal` mediante el método `.set()`.
  */
 
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TiendaService } from './services/tienda.service';
-import { Producto } from './models/producto.model';
+import { CarritoService } from './services/carrito.service';
 import { CatalogoComponent } from './components/catalogo/catalogo.component';
 import { CarritoComponent } from './components/carrito/carrito.component';
 
@@ -30,16 +30,16 @@ import { CarritoComponent } from './components/carrito/carrito.component';
 })
 export class App implements OnInit {
   private tiendaService = inject(TiendaService);
+  carritoService = inject(CarritoService);
 
-  //signal se usan para que el componente se actualice automaticamente cuando los datos cambian
-  //es un mecanismo de reactividad
-  productos = signal<Producto[]>([]);
+  // Leemos el signal centralizado del servicio
+  productos = this.tiendaService.productos;
 
   //esta funcion inserta los productos en el signal cuando se carga la aplicacion
   ngOnInit() {
     this.tiendaService.getProductosYCategorias().subscribe({
       next: (data) => {
-        this.productos.set(data);
+        this.tiendaService.productos.set(data);
       },
       error: (err) => {
         console.error('Error al obtener datos:', err);

@@ -6,9 +6,10 @@
  * * 3. Interacción (Fase 1): Prepara el disparador del botón de compra (`agregarAlCarrito`), el cual temporalmente solo registra la acción en la consola.
  */
 
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Producto } from '../../models/producto.model';
+import { CarritoService } from '../../services/carrito.service';
 
 @Component({
   selector: 'app-producto-card',
@@ -18,12 +19,13 @@ import { Producto } from '../../models/producto.model';
   styleUrls: ['./producto-card.component.css']
 })
 export class ProductoCardComponent {
+  private carritoService = inject(CarritoService);
+  
   producto = input.required<Producto>();
 
   sinStock = computed(() => this.producto().stock <= 0);
 
   agregarAlCarrito() {
-    // Fase 1: Sin implementación lógica, se solicitó explícitamente en el prompt.
-    console.log(`Intentando añadir al carrito: ${this.producto().id}`);
+    this.carritoService.agregarAlCarrito(this.producto().id);
   }
 }

@@ -16,7 +16,7 @@
  */
 
 
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map } from 'rxjs';
 import { Producto } from '../models/producto.model';
@@ -33,6 +33,9 @@ export class TiendaService {
   // HttpClient es un servicio de Angular que se usa para hacer peticiones HTTP
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:3000/api';
+
+  // Estado global reactivo de los productos
+  productos = signal<Producto[]>([]);
 
   // Este método devuelve un array de productos
   getProductosYCategorias(): Observable<Producto[]> {
@@ -58,6 +61,15 @@ export class TiendaService {
           };
         });
       })
+    );
+  }
+
+  // Actualiza el stock de un producto específico y repinta la UI reactivamente
+  actualizarStock(productoId: number, delta: number) {
+    this.productos.update(prods =>
+      prods.map(p =>
+        p.id === productoId ? { ...p, stock: p.stock + delta } : p
+      )
     );
   }
 }
