@@ -8,7 +8,7 @@
 
   <!-- Contenedor de la imagen. Carrusel interactivo en hover. -->
   <div class="imagen-wrapper" (mouseenter)="iniciarCarrusel()" (mouseleave)="detenerCarrusel()">
-    <ng-container *ngIf="producto().imagenes && producto().imagenes.length > 0; else noImage">
+    @if (producto().imagenes && producto().imagenes.length > 0) {
       <img [src]="producto().imagenes[imagenActual()]" [alt]="producto().descripcion" class="producto-imagen" />
       
       <!-- Indicadores de imagen (bolitas) -->
@@ -19,13 +19,12 @@
           }
         </div>
       }
-    </ng-container>
-    <ng-template #noImage>
+    } @else {
       <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center text-muted bg-light">
         <i class="bi bi-image" style="font-size: 3rem; opacity: 0.5;"></i>
         <span class="fw-semibold mt-2" style="opacity: 0.7;">No Image</span>
       </div>
-    </ng-template>
+    }
   </div>
 
   <!-- Información del producto -->
@@ -45,12 +44,11 @@
       <button class="btn btn-primary rounded-circle p-2 d-flex justify-content-center align-items-center"
         style="width: 45px; height: 45px;" [disabled]="sinStock()" (click)="agregarAlCarrito()"
         [title]="sinStock() ? 'Producto agotado' : 'Añadir al carrito'">
-        <ng-container *ngIf="sinStock(); else canBuy">
+        @if (sinStock()) {
           <i class="bi bi-x-lg fs-5"></i>
-        </ng-container>
-        <ng-template #canBuy>
+        } @else {
           <i class="bi bi-cart-plus-fill fs-5"></i>
-        </ng-template>
+        }
       </button>
     </div>
   </div>

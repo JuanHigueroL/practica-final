@@ -1,16 +1,3 @@
-
-/**
- * CatalogoComponent
- * * Este componente es el gestor principal de la vista de productos.
- * * 1. Recepción: Recibe el inventario completo desde el componente padre mediante `input()`.
- * * 2. Estado Reactivo: Utiliza un `signal()` para guardar el texto exacto de la barra de búsqueda.
- * * 3. Motor de Filtrado (computed): Recalcula automáticamente la lista de productos si cambia la
- * *    búsqueda y los agrupa en un diccionario (Objeto) separado por categorías.
- * * 4. Interfaz y Animaciones: Atrapa las pulsaciones del teclado en el buscador y actualiza el
- * *    estado utilizando la View Transitions API, logrando que los productos se filtren con un fundido
- * *    suave sin saltos bruscos en pantalla.
- */
-
 import { Component, input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

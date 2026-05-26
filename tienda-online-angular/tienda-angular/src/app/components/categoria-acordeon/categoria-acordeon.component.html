@@ -20,9 +20,11 @@
   <div class="categoria-contenido" [class.oculto]="!abierta()">
     <div>
       <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4 pt-3 pb-2 px-1">
-        <div class="col" *ngFor="let producto of productos()">
-          <app-producto-card [producto]="producto"></app-producto-card>
-        </div>
+        @for (producto of productos(); track producto.id) {
+          <div class="col">
+            <app-producto-card [producto]="producto"></app-producto-card>
+          </div>
+        }
       </div>
     </div>
   </div>

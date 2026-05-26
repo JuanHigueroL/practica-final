@@ -22,16 +22,15 @@
     @for (item of carritoService.carrito(); track item.producto.id) {
     <div class="carrito-item-row p-3 border bg-white mb-3">
       <div class="d-flex align-items-start gap-3">
-        <ng-container *ngIf="item.producto.imagenes && item.producto.imagenes.length > 0; else noImageCart">
+        @if (item.producto.imagenes && item.producto.imagenes.length > 0) {
           <img [src]="item.producto.imagenes[0]" alt="{{item.producto.descripcion}}"
             class="carrito-miniatura flex-shrink-0">
-        </ng-container>
-        <ng-template #noImageCart>
+        } @else {
           <div
             class="carrito-miniatura flex-shrink-0 d-flex justify-content-center align-items-center bg-secondary bg-opacity-10 border text-muted">
             <i class="bi bi-image" style="font-size: 1.2rem; opacity: 0.5;"></i>
           </div>
-        </ng-template>
+        }
 
         <div class="d-flex flex-column flex-grow-1" style="min-width: 0;">
           <p class="mb-0 fw-bold text-truncate" [title]="item.producto.descripcion">
