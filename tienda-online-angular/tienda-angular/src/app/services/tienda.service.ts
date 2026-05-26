@@ -72,15 +72,6 @@ export class TiendaService {
     return this.http.post(`${this.baseUrl}/productos`, form);
   }
 
-  // Editar un producto existente (usa FormData para las imágenes nuevas si aplica)
-  editarProducto(id: number, form: FormData): Observable<any> {
-    return this.http.put(`${this.baseUrl}/productos/${id}`, form);
-  }
-
-  // Eliminar un producto
-  eliminarProducto(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/productos/${id}`);
-  }
 
   // Actualiza el stock de un producto específico y repinta la UI reactivamente
   actualizarStock(productoId: number, delta: number) {
